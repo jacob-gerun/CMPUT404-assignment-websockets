@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # coding: utf-8
-# Copyright (c) 2013-2014 Abram Hindle
+# Copyright (c) 2013-2023 Jacob Gerun, Abram Hindle
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
 # You may obtain a copy of the License at
@@ -82,6 +82,7 @@ def send_all(msg):
         client.put( msg )
 
 def send_all_json(obj):
+    print("IN SEND ALL JSON", obj)
     send_all( json.dumps(obj) )
     #print(clients)
 
@@ -91,6 +92,7 @@ def set_listener(entity, data):
     # for client in clients:
     #     client.put(msg)
     #print("set_listener", entity, data)
+    
     send_all_json({entity:data})
 
 
@@ -116,12 +118,14 @@ def read_ws(ws, client):
             else:
                 data = json.loads(msg)
                 print("DATA", data)
+                send_all_json(data)
+                # myWorld.set(data['entity'], data['data'])
                 # for entity, updates in data.items():
                 #     print("ENTITY", entity)
                 #     print("UPDATES", updates)
                 #     for key, value in updates.items():
                 #         myWorld.update(entity, key, value)
-                send_all_json(data)
+                
                 # for other_client in clients:
                 #     if other_client != client:
                 #         print("PUTTING", other_client, data)

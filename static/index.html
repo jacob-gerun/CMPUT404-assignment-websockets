@@ -8,7 +8,7 @@
         name='viewport' />
     <meta name="viewport" content="width=device-width" />
     <meta name="license" content="
-        Copyright 2013 Google, Abram Hindle
+        Copyright 2023 Jacob Gerun, Google, Abram Hindle
         
         Licensed under the Apache License, Version 2.0 (the " License"); you may not use this file except in compliance
         with the License. You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0 Unless
@@ -21,7 +21,7 @@
 
 <body bgcolor="white" height="100%" width="100%">
     <div id="debug"></div>
-    <canvas id="c" width="100%" height="100%" style="-webkit-tap-highlight-color: transparent;"></canvas>
+    <canvas id="c" width="100%" height="100%" style="-webkit-tap-highlight-color: transparent;" bgcolor="grey"></canvas>
 
     <script>
         // Fix me
@@ -42,17 +42,44 @@
         world = {};
 
         //XXX: TODO Make this prettier!
+        // function drawCircle(context, entity) {
+        //     with (context) {
+        //         beginPath();
+        //         lineWidth = 3;
+        //         var x = entity["x"];
+        //         var y = entity["y"];
+        //         //moveTo(x,y);
+        //         fillStyle = entity["colour"];
+        //         strokeStyle = fillStyle;
+        //         arc(x, y, (entity["radius"]) ? entity["radius"] : 50, 0, 2.0 * Math.PI, false);
+        //         stroke();
+        //     }
+        // }
         function drawCircle(context, entity) {
             with (context) {
                 beginPath();
                 lineWidth = 3;
                 var x = entity["x"];
                 var y = entity["y"];
-                //moveTo(x,y);
-                fillStyle = entity["colour"];
-                strokeStyle = fillStyle;
-                arc(x, y, (entity["radius"]) ? entity["radius"] : 50, 0, 2.0 * Math.PI, false);
+                var radius = entity["radius"] ? entity["radius"] : 50;
+                var color = entity["colour"];
+                if (color == "blue") {
+                    shadowColor = "rgb(0, 255, 255)";
+                    shadowBlur = 20;
+                    fillStyle = "rgb(0, 120, 255)";
+                    strokeStyle = "rgb(0, 120, 255)";
+                } else if (color == "red") {
+                    shadowColor = "rgb(255, 0, 100)";
+                    shadowBlur = 20;
+                    fillStyle = "rgb(255, 0, 50)";
+                    strokeStyle = "rgb(255, 0, 50)";
+                } else {
+                    fillStyle = "rgb(255, 255, 255)";
+                    strokeStyle = color;
+                }
+                arc(x, y, radius, 0, 2.0 * Math.PI, false);
                 stroke();
+                fill();
             }
         }
 
@@ -267,11 +294,11 @@
                     debug("WebSocket Recv:" + msg.data);
                     //XXX: TODO What are you going to do here?  
                     var data = JSON.parse(msg.data);
-                    world = { ...world, ...data};
+                    world = { ...world, ...data };
                     // for (var entity in data) {
                     //     world[entity] = data[entity];
                     // }
-                    update();
+                    drawNextFrame();
 
                 } catch (e) {
                     alert("socket on message: " + e);
